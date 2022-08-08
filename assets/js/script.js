@@ -10,10 +10,13 @@ let ballPosY = canvas.height / 2;
 let ballDX = 1.5;
 let ballDY = -1.5;
 
+// ball radius
+const ballRadius = 10;
+
 // draw the ball
 const drawBall = () => {
     ctx.beginPath();
-    ctx.arc(ballPosX, ballPosY, 10, 0, Math.PI * 2);
+    ctx.arc(ballPosX, ballPosY, ballRadius, 0, Math.PI * 2);
     ctx.fillStyle = 'green';
     ctx.fill();
     ctx.closePath();
@@ -30,6 +33,16 @@ const draw = () => {
     // move ball
     ballPosX += ballDX;
     ballPosY += ballDY;
+
+    // collision detection
+    if (ballPosY + ballDY < ballRadius || ballPosY + ballDY > canvas.height - ballRadius) {
+        // reverse direction
+        ballDY = -ballDY;
+    };
+
+    if (ballPosX + ballDX < ballRadius || ballPosX + ballDX > canvas.width - ballRadius) {
+        ballDX = -ballDX;
+    };
 };
 
 // run drawing loop every 10 milliseconds
