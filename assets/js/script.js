@@ -22,6 +22,24 @@ let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
 
+// brick field information
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
+// set up 2d array to store brick info
+const bricks = [];
+for (let i = 0; i < brickColumnCount; i++) {
+    bricks[i] = [];
+    for (let j = 0; j < brickRowCount; j++) {
+        bricks[i][j] = { x: 0, y: 0 };
+    };
+};
+
 // draw the ball
 const drawBall = () => {
     ctx.beginPath();
@@ -40,12 +58,32 @@ const drawPaddle = () => {
     ctx.closePath();
 };
 
+const drawBricks = () => {
+    for (let i = 0; i < brickColumnCount; i++) {
+        for (let j = 0; j < brickRowCount; j++) {
+            // set up brick coordinates
+            const brickX = (i * (brickWidth + brickPadding)) + brickOffsetLeft;
+            const brickY = (j * (brickHeight + brickPadding)) + brickOffsetTop;
+
+            bricks[i][j].x = brickX;
+            bricks[i][j].y = brickY;
+
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = 'tomato';
+            ctx.fill();
+            ctx.closePath();
+        };
+    };
+};
+
 // drawing loop function
 const draw = () => {
     // clear previous frame
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // paint assets to the screen
+    drawBricks();
     drawBall();
     drawPaddle();
 
