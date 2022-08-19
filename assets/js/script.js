@@ -54,9 +54,21 @@ const draw = () => {
     ballPosY += ballDY;
 
     // collision detection
-    if (ballPosY + ballDY < ballRadius || ballPosY + ballDY > canvas.height - ballRadius) {
+    if (ballPosY + ballDY < ballRadius) {
         // reverse direction
         ballDY = -ballDY;
+    } else if (ballPosY + ballDY > canvas.height - ballRadius) { // ball hits bottom of screen
+        if (ballPosX > paddleX && ballPosX < paddleX + paddleWidth) {
+            ballDY = -ballDY;
+
+            // increase speed;
+            ballDX += 0.2;
+            ballDY -= 0.2;
+        } else {
+            alert('GAME OVER');
+            window.location.reload();
+            clearInterval(interval); // required for Chrome
+        };
     };
 
     if (ballPosX + ballDX < ballRadius || ballPosX + ballDX > canvas.width - ballRadius) {
@@ -92,5 +104,5 @@ const keyUpHandler = e => {
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 
-// run drawing loop every 10 milliseconds
-setInterval(draw, 10);
+// define game interval
+const interval = setInterval(draw, 10);
