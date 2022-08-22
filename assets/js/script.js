@@ -2,6 +2,9 @@ const canvas = document.querySelector('#gameCanvas');
 
 const ctx = canvas.getContext('2d');
 
+// initial score
+let score = 0;
+
 // ball hue
 let ballHue = 0;
 
@@ -42,6 +45,13 @@ for (let i = 0; i < brickColumnCount; i++) {
         bricks[i][j] = { x: 0, y: 0, status: 1 };
         // status: if 1, paint to screen, else do not paint
     };
+};
+
+// draw the score
+const drawScore = () => {
+    ctx.font = '';
+    ctx.fillStyle = '#0095DD';
+    ctx.fillText(`Score: ${score}`, 8, 20);
 };
 
 // draw the ball
@@ -100,8 +110,15 @@ const collisionDetection = () => {
                 ) {
                     ballDY = -ballDY;
                     b.status = 0;
-
                     ballHue < 340 ? ballHue += 40 : ballHue = 0;
+                    score += 20;
+
+                    // check win condition
+                    if (score === brickRowCount * brickColumnCount * 20) {
+                        alert(`Congrats! Final Score: ${score}`);
+                        window.location.reload();
+                        clearInterval();
+                    };
                 };
             };
         };
@@ -117,6 +134,7 @@ const draw = () => {
     drawBricks();
     drawBall();
     drawPaddle();
+    drawScore();
 
     // move ball
     ballPosX += ballDX;
@@ -134,7 +152,7 @@ const draw = () => {
             ballDX += 0.2;
             ballDY -= 0.2;
         } else {
-            alert('GAME OVER');
+            alert(`Game Over! Final Score: ${score}`);
             window.location.reload();
             clearInterval(interval); // required for Chrome
         };
