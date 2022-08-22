@@ -199,10 +199,19 @@ const mouseMoveHandler = e => {
     };
 };
 
+const touchHandler = e => {
+    const touchX = e.touches[0].clientX - canvas.offsetLeft;
+
+    if (touchX > 0 && touchX < canvas.width) {
+        paddleX = touchX - paddleWidth / 2;
+    };
+};
+
 // key event listeners
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('mousemove', mouseMoveHandler, false);
+document.addEventListener('touchmove', touchHandler, false);
 
 // define game interval
 const interval = setInterval(draw, 10);
