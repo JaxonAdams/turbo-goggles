@@ -190,9 +190,19 @@ const keyUpHandler = e => {
     };
 };
 
+const mouseMoveHandler = e => {
+    // relative position
+    const relativeX = e.clientX - canvas.offsetLeft;
+    
+    if (relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth / 2;
+    };
+};
+
 // key event listeners
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
 // define game interval
 const interval = setInterval(draw, 10);
