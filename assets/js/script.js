@@ -2,6 +2,9 @@ const canvas = document.querySelector('#gameCanvas');
 
 const ctx = canvas.getContext('2d');
 
+// ball hue
+let ballHue = 0;
+
 // ball position
 let ballPosX = canvas.width / 2;
 let ballPosY = canvas.height / 2;
@@ -36,7 +39,8 @@ const bricks = [];
 for (let i = 0; i < brickColumnCount; i++) {
     bricks[i] = [];
     for (let j = 0; j < brickRowCount; j++) {
-        bricks[i][j] = { x: 0, y: 0 };
+        bricks[i][j] = { x: 0, y: 0, status: 1 };
+        // status: if 1, paint to screen, else do not paint
     };
 };
 
@@ -44,7 +48,7 @@ for (let i = 0; i < brickColumnCount; i++) {
 const drawBall = () => {
     ctx.beginPath();
     ctx.arc(ballPosX, ballPosY, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = `hsl(${ballHue}, 100%, 50%)`;
     ctx.fill();
     ctx.closePath();
 };
@@ -58,21 +62,48 @@ const drawPaddle = () => {
     ctx.closePath();
 };
 
+// draw the brick field
 const drawBricks = () => {
     for (let i = 0; i < brickColumnCount; i++) {
         for (let j = 0; j < brickRowCount; j++) {
-            // set up brick coordinates
-            const brickX = (i * (brickWidth + brickPadding)) + brickOffsetLeft;
-            const brickY = (j * (brickHeight + brickPadding)) + brickOffsetTop;
+            if (bricks[i][j].status === 1) {
+                // set up brick coordinates
+                const brickX = (i * (brickWidth + brickPadding)) + brickOffsetLeft;
+                const brickY = (j * (brickHeight + brickPadding)) + brickOffsetTop;
 
-            bricks[i][j].x = brickX;
-            bricks[i][j].y = brickY;
+                bricks[i][j].x = brickX;
+                bricks[i][j].y = brickY;
 
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = 'tomato';
-            ctx.fill();
-            ctx.closePath();
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = 'tomato';
+                ctx.fill();
+                ctx.closePath();
+            };
+        };
+    };
+};
+
+// brick field collision detection
+const collisionDetection = () => {
+    for (let i = 0; i < brickColumnCount; i++) {
+        for (let j = 0; j < brickRowCount; j++) {
+            // brick info stored here
+            const b = bricks[i][j];
+
+            if (b.status === 1) {
+                if (
+                    ballPosX > b.x &&
+                    ballPosX < b.x + brickWidth &&
+                    ballPosY > b.y &&
+                    ballPosY < b.y + brickHeight
+                ) {
+                    ballDY = -ballDY;
+                    b.status = 0;
+
+                    ballHue < 340 ? ballHue += 40 : ballHue = 0;
+                };
+            };
         };
     };
 };
@@ -91,7 +122,7 @@ const draw = () => {
     ballPosX += ballDX;
     ballPosY += ballDY;
 
-    // collision detection
+    // paddle collision detection
     if (ballPosY + ballDY < ballRadius) {
         // reverse direction
         ballDY = -ballDY;
@@ -108,6 +139,9 @@ const draw = () => {
             clearInterval(interval); // required for Chrome
         };
     };
+
+    // brick collision detection
+    collisionDetection();
 
     if (ballPosX + ballDX < ballRadius || ballPosX + ballDX > canvas.width - ballRadius) {
         ballDX = -ballDX;
