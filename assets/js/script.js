@@ -149,8 +149,8 @@ const draw = () => {
             ballDY = -ballDY;
 
             // increase speed;
-            ballDX += 0.2;
-            ballDY -= 0.2;
+            ballDX += 0.25;
+            ballDY -= 0.25;
         } else {
             alert(`Game Over! Final Score: ${score}`);
             window.location.reload();
@@ -212,6 +212,9 @@ document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('mousemove', mouseMoveHandler, false);
 document.addEventListener('touchmove', touchHandler, false);
+
+// start game message
+alert(`Breakout! Break all the bricks to win, but don't let the ball touch the bottom of the screen!`);
 
 // define game interval
 const interval = setInterval(draw, 10);
